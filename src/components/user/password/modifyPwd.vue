@@ -1,15 +1,15 @@
 <template>
-  <div class="login">
+  <div class="modifyPwd">
     {{page}}
   </div>
 </template>
 
 <script>
 export default {
-  name: 'login',
+  name: 'modifyPwd',
   data () {
     return {
-      page: 'login'
+      page: 'modifyPwd'
     }
   }
 }
