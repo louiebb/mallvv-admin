@@ -11,9 +11,15 @@ Vue.config.productionTip = false;
 import 'normalize.css';
 import './sass/base.scss';
 
+import 'bootstrap/dist/css/bootstrap.css'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
+
+// import swal from 'sweetalert';
+import { default as swal } from 'sweetalert2'
+
+Vue.prototype.$swal = swal;
 
 
 

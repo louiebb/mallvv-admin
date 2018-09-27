@@ -10,6 +10,8 @@ import UserList from '@/components/user/list/userList';
 import UserInfo from '@/components/user/info/userInfo';
 import UserPwd from '@/components/user/password/userPwd';
 import OrderList from '@/components/order/list/list';
+import Test from '@/components/test/HelloWorld';
+
 
 
 Vue.use(Router)
@@ -53,6 +55,11 @@ let router = new Router({
           path:'orderlist',
           name:'orderlist',
           component:OrderList
+        },
+        {
+          path:'test',
+          name:'test',
+          component:Test
         },
     ]
     },{

@@ -36,6 +36,7 @@
             </template>
             <el-menu-item-group>
               <el-menu-item index="3-1" @click="orderlist">订单列表</el-menu-item>
+              <el-menu-item index="3-2" @click="test">测试</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
         </el-menu>
@@ -76,6 +77,9 @@ export default {
       orderlist(){
         this.$router.push({name:'orderlist'});
       },
+      test(){
+        this.$router.push({name:'test'});
+      }
     }
 };
 </script>
