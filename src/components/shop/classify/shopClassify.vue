@@ -138,12 +138,14 @@ export default {
         console.log(row, event, column, event.currentTarget)
     },
     handleEdit(index, row) {
+        this.dialogStatus = false;
         this.form = this.tableData[index];
         this.currentIndex = index;
         this.dialogFormVisible = true;
         console.log("edit",index, row);
     },
     addOpen() {
+      this.dialogStatus = true;
       this.form = {name:'',parent:'',type:'',url:''};
       this.dialogFormVisible = true
     },

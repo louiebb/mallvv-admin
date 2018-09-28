@@ -42,7 +42,9 @@ let DB = {
         });
     },
     select:function(sql,callback){
-        conn(sql,callback);
+        conn(sql).then(x=>{
+          callback(apiResult(true,x,null));
+        });
     },
     delete:function(sql,callback){
         conn(sql).then(x=>{

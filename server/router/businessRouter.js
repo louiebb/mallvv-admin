@@ -37,6 +37,14 @@ module.exports = {
         });
 
         //classfiy
+        app.post("/shopAllClassify", function(req, res){
+          var obj = {
+              where:req.body.where,
+          };
+          shop.selectallclassfiy(obj,function(result){
+              res.end(result);
+          });
+      });
         app.post("/shopClassify", function(req, res){
             var obj = {
                 where:req.body.where,

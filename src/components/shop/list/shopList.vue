@@ -10,8 +10,7 @@
       </el-form-item>
       <el-form-item label="商品分类">
         <el-select v-model="formInline.type" placeholder="请选择分类">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+          <el-option v-for="cls in classfiyData" :key="cls.id" :label="cls.name" :value="cls.type"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -123,6 +122,7 @@ export default {
       total:0,
       tableData:[],
       datas:{},
+      classfiyData:[],
       formInline: {
           name: '',
           type: ''
@@ -139,6 +139,17 @@ export default {
   methods:{
     onSubmit() {
       console.log('submit!');
+    },
+    getClassfiyData(){
+      this.$axios.post('/api/shopAllClassify',{
+        where:{f:'1',o:'=',v:'1',}
+        }).then((result) => {
+          if(result.data&&result.data.status){
+            this.classfiyData = result.data.data ;
+          }
+        }).catch((err) => {
+          console.log('getData',err);
+      });
     },
     getData(){
       this.$axios.post('/api/shoplist',{
@@ -249,42 +260,42 @@ export default {
       })
     },
     handleDelete(index, row) {
-    const swalWithBootstrapButtons = this.$swal.mixin({
-      confirmButtonClass: 'btn btn-success',
-      cancelButtonClass: 'btn btn-danger',
-      buttonsStyling: false,
-    })
+      const swalWithBootstrapButtons = this.$swal.mixin({
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        buttonsStyling: false,
+      })
 
-    swalWithBootstrapButtons({
-      title: 'Are you sure?',
-      text: "You will delete this shop!",
-      type: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, cancel!',
-      reverseButtons: true
-    }).then((result) => {
-      if (result.value) {
-        let id = this.tableData[index].id;
-        this.delete(id).then(x=>{
-          this.tableData.splice(index, 1);
-        });
-        swalWithBootstrapButtons(
-          'Deleted!',
-          'Shop has been deleted.',
-          'success'
-        )
-      } else if (
-        // Read more about handling dismissals
-        result.dismiss === this.$swal.DismissReason.cancel
-      ) {
-        swalWithBootstrapButtons(
-          'Cancelled',
-          'Your delete  is cancel :)',
-          'error'
-        )
-      }
-    });
+      swalWithBootstrapButtons({
+        title: 'Are you sure?',
+        text: "You will delete this shop!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+          let id = this.tableData[index].id;
+          this.delete(id).then(x=>{
+            this.tableData.splice(index, 1);
+          });
+          swalWithBootstrapButtons(
+            'Deleted!',
+            'Shop has been deleted.',
+            'success'
+          )
+        } else if (
+          // Read more about handling dismissals
+          result.dismiss === this.$swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons(
+            'Cancelled',
+            'Your delete  is cancel :)',
+            'error'
+          )
+        }
+      });
     },
     handleSave:function(row){
     console.log("save",row);
@@ -293,6 +304,7 @@ export default {
 },
   created(){
     this.getData();
+    this.getClassfiyData();
   }
 }
 </script>

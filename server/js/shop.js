@@ -42,6 +42,15 @@ let business = {
           callback(res);
       })
     },
+
+    selectallclassfiy:function(data,callback){
+      let where = data.where;
+      let  condition = `${where.f} ${where.o} '${where.v}' `;
+      let sql = `select id,name,type  from ${typetable3} where  ${condition}`;
+      db.select(sql,function(res){
+          callback(res);
+      })
+    },
     selectclassfiy:function(data,callback){
       let  condition = 'and'+ data.where.map(x=> ` ${x.f} ${x.o} '${x.v}' `).join('and');
       let sql = `select * from ${typetable3} where 1=1 ${condition} limit ${(data.pageNo-1)*data.qty} , ${data.qty}`;
