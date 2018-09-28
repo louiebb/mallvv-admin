@@ -4,7 +4,6 @@
 export default {
   //用于存放数据
   state:{
-
   },
   //获取数据
   //与组件中的computed类似

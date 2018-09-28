@@ -1,56 +1,37 @@
 <template>
   <div class="shopClassify">
 
-    <el-menu
-      class="el-menu-demo"
-      mode="horizontal"
-      background-color="#545c64"
-      text-color="#fff"
-      active-text-color="#ffd04b">
-       <el-button size="small" type="primary" @click="addOpen">新增</el-button>
+    <el-menu class="el-menu-demo" mode="horizontal" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+      <el-button size="small" type="primary" @click="addOpen">新增</el-button>
     </el-menu>
 
-
-
-    <el-table class="table tb-edit"  border :data="tableData" style="width: 100%;" highlight-current-row>
+    <el-table class="table tb-edit" border :data="tableData" style="width: 100%;" highlight-current-row>
       <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" type="selection" width="55">
       </el-table-column>
-      <el-table-column  header-align="center" prop show-overflow-tooltip resizable align="center" type="index" width="50"></el-table-column>
-      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center"  width="50" label="ID" >
+      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" type="index" width="50"></el-table-column>
+      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" width="50" label="ID">
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
-      <el-table-column  header-align="center" prop show-overflow-tooltip resizable align="center" label="商品名称" >
+      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" label="商品名称">
         <template slot-scope="scope"><span>{{ scope.row.name }}</span></template>
       </el-table-column>
-      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center"  width="100" label="父级ID" >
-        <template slot-scope="scope">{{ scope.row.parent }}</template>
+      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" width="100" label="父级">
+        <template slot-scope="scope">{{ parentData.formate[scope.row.parent] }}</template>
       </el-table-column>
-      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center"  width="100" label="类型编码" >
+      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" width="100" label="类型编码">
         <template slot-scope="scope">{{ scope.row.type }}</template>
       </el-table-column>
-      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center"  width="100" label="地址" >
+      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" width="100" label="地址">
         <template slot-scope="scope">{{ scope.row.url }}</template>
       </el-table-column>
-      <el-table-column  header-align="center" prop show-overflow-tooltip resizable align="center" width="200" label="操作">
+      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" width="200" label="操作">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-     <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChangePage"
-      :current-page="pageNo"
-      :page-sizes="[5, 10, 15, 20]"
-      :page-size="qty"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total">
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChangePage" :current-page="pageNo" :page-sizes="[5, 10, 15, 20]" :page-size="qty" layout="total, sizes, prev, pager, next, jumper" :total="total">
     </el-pagination>
 
     <el-dialog title="分类信息" :visible.sync="dialogFormVisible" class="dialog">
@@ -61,9 +42,7 @@
         <el-form-item label="分类编码" :label-width="formLabelWidth">
           <el-input type="number" v-model="form.type" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="父级" :label-width="formLabelWidth">
-          <el-input type="number" v-model="form.parent" auto-complete="off"></el-input>
-        </el-form-item>
+        <shop-type :currobj="{value:form.parent,width:formLabelWidth,title:'父级'}"></shop-type>
         <el-form-item label="地址" :label-width="formLabelWidth">
           <el-input v-model="form.url" auto-complete="off"></el-input>
         </el-form-item>
@@ -78,6 +57,8 @@
 </template>
 
 <script>
+import ShopType from "../common/shopType";
+
 export default {
   name: 'shopClassify',
   data () {
@@ -88,6 +69,10 @@ export default {
       total:0,
       tableData:[],
       datas:{},
+      pData:{
+        source:[],
+        formate:{}
+      },
       formInline: {
           name: '',
           type: ''
@@ -101,10 +86,38 @@ export default {
     }
   },
   computed:{
+    parentData:{
+      get(){
+        return this.pData;
+      },
+      set(val){
+        this.pData = val
+      }
+    }
+  },
+  components:{
+    ShopType
   },
   methods:{
     onSubmit() {
       console.log('submit!');
+    },
+    getParentData(){
+      this.$axios.post('/api/shopAllClassify',{
+        where:{f:'1',o:'=',v:'1',t:'2'}
+        }).then((result) => {
+          console.log(result);
+          if(result.data&&result.data.status){
+            this.pData.source = result.data.data ;
+            let obj = this.pData.source;
+            let currentobj = {};
+            obj.forEach(x=> currentobj[x.type] = x.name);
+            this.pData.formate = currentobj;
+            console.log(this.pData);
+          }
+        }).catch((err) => {
+          console.log('getData',err);
+      });
     },
     getData(){
       this.$axios.post('/api/shopClassify',{
@@ -112,7 +125,6 @@ export default {
         qty:this.qty,
         where:[{f:'1',o:'=',v:'1',}]
         }).then((result) => {
-          console.log(result);
           if(result.data&&result.data.status){
             this.datas = result.data.data ;
             this.tableData = this.datas.data;
@@ -142,7 +154,6 @@ export default {
         this.form = this.tableData[index];
         this.currentIndex = index;
         this.dialogFormVisible = true;
-        console.log("edit",index, row);
     },
     addOpen() {
       this.dialogStatus = true;
@@ -272,15 +283,16 @@ export default {
 },
   created(){
     this.getData();
+    this.getParentData();
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-  .shopClassify{
-    *{
-      line-height: 1em;
-    }
+.shopClassify {
+  * {
+    line-height: 1em;
   }
+}
 </style>

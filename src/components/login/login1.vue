@@ -1,32 +1,51 @@
 <template>
-  <div class="userPwd">
-    <div style="height:30px;border-bottom:1px solid #fff;light-height:30px;font-size:20px;">修改密码</div>
-    <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm" style="margin-top:20px;min-height:500px;">
-      <el-form-item label="当前密码：" prop="user">
-        <el-input v-model.string="ruleForm2.user" class="inp"></el-input>
-      </el-form-item>
+  <div class="container">
+    <div>
+      <div class="small">
 
-      <el-form-item label="新密码：" prop="pass">
-        <el-input type="password" v-model="ruleForm2.pass" autocomplete="off" class="inp"></el-input>
-      </el-form-item>
+        <!-- <img src="./assets/logo.png"> -->
+        <h2>商品后台管理系统</h2>
 
-      <el-form-item label="确认密码：" prop="checkPass">
-        <el-input type="password" v-model="ruleForm2.checkPass" autocomplete="off" class="inp"></el-input>
-      </el-form-item>
+        <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="用户名：" prop="user">
+            <el-input v-model.string="ruleForm2.user"></el-input>
+          </el-form-item>
 
-      <el-row>
-        <el-button class="btn" type="primary" @click.native="submitForm('ruleForm2')">
-          <div>确认修改</div>
-        </el-button>
-      </el-row>
-    </el-form>
+          <el-form-item label="密码：" prop="pass">
+            <el-input type="password" v-model="ruleForm2.pass" autocomplete="off"></el-input>
+          </el-form-item>
+
+          <el-form-item label="确认密码：" prop="checkPass">
+            <el-input type="password" v-model="ruleForm2.checkPass" autocomplete="off"></el-input>
+          </el-form-item>
+
+          <el-row>
+            <el-button class="btn" type="primary" @click.native="submitForm('ruleForm2')">
+              <div>登录</div>
+            </el-button>
+          </el-row>
+          <el-checkbox v-model="checked" class="jizhu">
+            <div style="color:red;">记住密码</div>
+          </el-checkbox>
+          <router-link to="login">
+            <div style="float:right;color:red;">忘记密码</div>
+          </router-link>
+        </el-form>
+      </div>
+    </div>
   </div>
 </template>
-
 <script>
-export default {
-  name: 'userPwd',
-   data() {
+//引入各种框架
+  import Vue from 'vue';
+  //import FontAwesome from 'font-awesome-4.7.0';
+  //import '../static/font-awesome-4.7.0/css/font-awesome.css';
+  //Vue.use(FontAwesome);
+ import ElementUI from 'element-ui';
+  import 'element-ui/lib/theme-chalk/index.css';
+  Vue.use(ElementUI);
+  export default {
+    data() {
        var checkUser = (rule, value, callback) => {
         // if(!/^\S{6,20}$/.test(value)){
         //   callback(new Error('密码不能有空格'));
@@ -105,12 +124,20 @@ export default {
         this.$refs[formName].resetFields();
       }
     }
-}
+  }
+  name: 'App'
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-<style>
+<style >
+.app img {
+  display: block;
+  margin: 0 auto;
+  height: 100px;
+}
+h2 {
+  text-align: center;
+  color: #fff;
+}
 /*.app{position: absolute; top:0; bottom:0; right:0; left:0; margin:auto;border:1px solid black; width:500px;height:480px;}*/
 .small {
   position: absolute;
@@ -123,14 +150,17 @@ export default {
   height: 450px;
 }
 .btn {
-  width: 100px;
+  width: 300px;
   height: 38px;
-  margin: 0 100px;
+  margin: 0 25%;
 }
 .label {
   border: 1px solid black;
 }
-.inp {
-  width: 200px;
+.jizhu {
+  margin-left: 100px;
+}
+body {
+  background-color: #324057;
 }
 </style>

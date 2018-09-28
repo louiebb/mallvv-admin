@@ -8,11 +8,13 @@ Vue.use(Vuex);
 
 //针对header模块的store
 import header from './header';
-// import com from './common';
+import com from './common';
+import shop from './shop';
 
 export default new Vuex.Store({
   modules:{
     header,
-    // com
+    com,
+    shop,
   }
 })

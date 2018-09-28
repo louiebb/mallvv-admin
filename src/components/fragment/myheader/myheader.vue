@@ -56,6 +56,7 @@ export default {
     }
     .dec{
       margin-left: 30em;
+    padding-top: 10px;
     }
   }
 </style>

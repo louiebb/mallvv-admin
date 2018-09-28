@@ -3,6 +3,7 @@
     <el-col :span="24">
     <el-menu
           default-active="2"
+          :defaultOpeneds = "openlist"
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose"
@@ -50,6 +51,7 @@ export default {
   data() {
     return {
       page: "aside",
+      openlist: ["1","2","3"]
     };
   },
    methods: {

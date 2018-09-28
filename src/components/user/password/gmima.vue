@@ -1,5 +1,5 @@
 <template>
-  <div class="userPwd">
+  <div>
     <div style="height:30px;border-bottom:1px solid #fff;light-height:30px;font-size:20px;">修改密码</div>
     <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm" style="margin-top:20px;min-height:500px;">
       <el-form-item label="当前密码：" prop="user">
@@ -22,11 +22,17 @@
     </el-form>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'userPwd',
-   data() {
+<script type="text/javascript">
+//引入各种框架
+  import Vue from 'vue';
+  //import FontAwesome from 'font-awesome-4.7.0';
+  //import '../static/font-awesome-4.7.0/css/font-awesome.css';
+  //Vue.use(FontAwesome);
+ import ElementUI from 'element-ui';
+  import 'element-ui/lib/theme-chalk/index.css';
+  Vue.use(ElementUI);
+  export default {
+    data() {
        var checkUser = (rule, value, callback) => {
         // if(!/^\S{6,20}$/.test(value)){
         //   callback(new Error('密码不能有空格'));
@@ -105,11 +111,9 @@ export default {
         this.$refs[formName].resetFields();
       }
     }
+
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
 <style>
 /*.app{position: absolute; top:0; bottom:0; right:0; left:0; margin:auto;border:1px solid black; width:500px;height:480px;}*/
 .small {

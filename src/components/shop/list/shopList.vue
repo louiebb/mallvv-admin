@@ -1,81 +1,64 @@
 <template>
   <div class="shopList">
 
-    <el-form  :inline="true" :model="formInline" class="nav demo-form-inline">
-       <el-form-item>
+    <el-form :inline="true" :model="formInline" class="nav demo-form-inline">
+      <el-form-item>
         <el-button size="small" type="primary" @click="add">新增</el-button>
       </el-form-item>
       <el-form-item label="关键字">
-        <el-input v-model="formInline.name" placeholder="请输入商品名称"></el-input>
+        <el-input clearable v-model="formInline.name" placeholder="请输入商品名称"></el-input>
       </el-form-item>
-      <el-form-item label="商品分类">
-        <el-select v-model="formInline.type" placeholder="请选择分类">
-          <el-option v-for="cls in classfiyData" :key="cls.id" :label="cls.name" :value="cls.type"></el-option>
-        </el-select>
-      </el-form-item>
+      <shop-type :currobj="{value:formInline.type,width:formLabelWidth,title:'商品分类'}"></shop-type>
       <el-form-item>
-        <el-button size="small" type="primary" @click="onSubmit"><i class="el-icon-search"></i></el-button>
+        <el-button size="small" type="primary" @click="onSearch"><i class="el-icon-search"></i></el-button>
       </el-form-item>
     </el-form>
 
-
-    <el-table class="table tb-edit"  border :data="tableData" style="width: 100%;" highlight-current-row>
+    <el-table class="table tb-edit" border :data="tableData" style="width: 100%;" highlight-current-row>
       <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" type="selection" width="55">
       </el-table-column>
-      <el-table-column  header-align="center" prop show-overflow-tooltip resizable align="center" type="index" width="50"></el-table-column>
-      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center"  width="50" label="ID" >
+      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" type="index" width="50"></el-table-column>
+      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" width="50" label="ID">
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
-      <el-table-column  header-align="center" prop show-overflow-tooltip resizable align="center" label="商品分类" width="80">
+      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" label="商品分类" width="80">
         <template slot-scope="scope">
-          <span>{{ scope.row.type }}</span>
+          <span>{{ classfiyData.formate[scope.row.type] }}</span>
         </template>
       </el-table-column>
-      <el-table-column  header-align="center" prop show-overflow-tooltip resizable align="center" label="商品名称" width="210">
+      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" label="商品名称" width="210">
         <template slot-scope="scope">
           <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column  header-align="center" prop show-overflow-tooltip resizable align="center" label="库存" width="50">
+      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" label="库存" width="50">
         <template slot-scope="scope">
           <span>{{ scope.row.stock }}</span>
         </template>
       </el-table-column>
-      <el-table-column  header-align="center" prop show-overflow-tooltip resizable align="center" label="价格" width="100">
+      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" label="价格" width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.price }}</span>
         </template>
       </el-table-column>
-      <el-table-column  header-align="center" prop show-overflow-tooltip resizable align="center" label="折扣" width="50">
+      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" label="折扣" width="50">
         <template slot-scope="scope">
           <span>{{ scope.row.discount }}</span>
         </template>
       </el-table-column>
-       <el-table-column  header-align="center" prop show-overflow-tooltip resizable align="center"  label="备注" width="300">
+      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" label="备注" width="300">
         <template slot-scope="scope">
           <span>{{ scope.row.remark }}</span>
         </template>
       </el-table-column>
-      <el-table-column  header-align="center" prop show-overflow-tooltip resizable align="center" label="操作">
+      <el-table-column header-align="center" prop show-overflow-tooltip resizable align="center" label="操作">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-     <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChangePage"
-      :current-page="pageNo"
-      :page-sizes="[5, 10, 15, 20]"
-      :page-size="qty"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total">
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChangePage" :current-page="pageNo" :page-sizes="[5, 10, 15, 20]" :page-size="qty" layout="total, sizes, prev, pager, next, jumper" :total="total">
     </el-pagination>
 
     <el-dialog title="商品信息" :visible.sync="dialogFormVisible" class="dialog">
@@ -83,13 +66,7 @@
         <el-form-item label="商品名称" :label-width="formLabelWidth">
           <el-input v-model="form.name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="商品分类" :label-width="formLabelWidth">
-          <el-select v-model="form.type" placeholder="请选择" >
-              <!-- <el-option v-for="item in cityList" :key="item.name" :label="item.name" :value="item.name">
-              </el-option> -->
-               <el-option :value="form.type"> {{form.type}}</el-option>
-            </el-select>
-        </el-form-item>
+        <shop-type :currobj="{value:form.type,width:formLabelWidth,title:'商品分类'}"></shop-type>
         <el-form-item label="库存" :label-width="formLabelWidth">
           <el-input v-model="form.stock" auto-complete="off"></el-input>
         </el-form-item>
@@ -112,6 +89,7 @@
 </template>
 
 <script>
+import ShopType from "../common/shopType";
 export default {
   name: 'shopList',
   data () {
@@ -122,10 +100,9 @@ export default {
       total:0,
       tableData:[],
       datas:{},
-      classfiyData:[],
       formInline: {
           name: '',
-          type: ''
+          type: '全部'
       },
       //dialog
       dialogFormVisible: false,
@@ -135,27 +112,28 @@ export default {
     }
   },
   computed:{
+    classfiyData:{
+      get(){
+        return this.$store.state.shop.shopClassfiy
+      },
+      set(){
+
+      }
+    }
   },
   methods:{
-    onSubmit() {
-      console.log('submit!');
-    },
-    getClassfiyData(){
-      this.$axios.post('/api/shopAllClassify',{
-        where:{f:'1',o:'=',v:'1',}
-        }).then((result) => {
-          if(result.data&&result.data.status){
-            this.classfiyData = result.data.data ;
-          }
-        }).catch((err) => {
-          console.log('getData',err);
-      });
+    onSearch() {
+      this.getData();
     },
     getData(){
+      let where = [{f:'name',o:'like',v:'%'+this.formInline.name+'%',}];
+      if (!['全部','*'].includes(this.formInline.type)) {
+        where.push({f:'type',o:'=',v:this.formInline.type});
+      }
       this.$axios.post('/api/shoplist',{
         pageNo:this.pageNo,
         qty:this.qty,
-        where:[{f:'name',o:'like',v:'%',},{f:'type',o:'=',v:'200101'}]
+        where
         }).then((result) => {
           if(result.data&&result.data.status){
             this.datas = result.data.data ;
@@ -205,7 +183,7 @@ export default {
         score:'',
         stock:'',
         storeid:'',
-        type:'',
+        type:'200101',
       }
       this.dialogFormVisible = true
     },
@@ -249,7 +227,9 @@ export default {
               '修改成功',
               '',
               'success'
-            )
+            ).then(x=>{
+              this.getData();
+            })
         }else{
            this.$swal(
               '修改失败',
@@ -301,19 +281,22 @@ export default {
     console.log("save",row);
         //保存数据，向后台取数据
     },
-},
+  },
+  components:{
+    ShopType
+  },
   created(){
     this.getData();
-    this.getClassfiyData();
+    console.log(this.$store.state);
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-  .shopList{
-    *{
-      line-height: 1em;
-    }
+.shopList {
+  * {
+    line-height: 1em;
   }
+}
 </style>
