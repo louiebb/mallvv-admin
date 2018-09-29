@@ -8,7 +8,7 @@
       <el-form-item label="关键字">
         <el-input clearable v-model="formInline.name" placeholder="请输入商品名称"></el-input>
       </el-form-item>
-      <shop-type :currobj="{value:formInline.type,width:formLabelWidth,title:'商品分类'}"></shop-type>
+      <shop-type @setShopClassgiy="setShopClassgiy" :currobj="{table:'3',value:formInline.type,type:'show',width:formLabelWidth,title:'商品分类'}"></shop-type>
       <el-form-item>
         <el-button size="small" type="primary" @click="onSearch"><i class="el-icon-search"></i></el-button>
       </el-form-item>
@@ -66,7 +66,7 @@
         <el-form-item label="商品名称" :label-width="formLabelWidth">
           <el-input v-model="form.name" auto-complete="off"></el-input>
         </el-form-item>
-        <shop-type :currobj="{value:form.type,width:formLabelWidth,title:'商品分类'}"></shop-type>
+        <shop-type @setShopClassgiy="setFormClassgiy" :currobj="{table:'3',value:Number(form.type),type:'unshow', width:formLabelWidth,title:'商品分类'}"></shop-type>
         <el-form-item label="库存" :label-width="formLabelWidth">
           <el-input v-model="form.stock" auto-complete="off"></el-input>
         </el-form-item>
@@ -127,6 +127,7 @@ export default {
     },
     getData(){
       let where = [{f:'name',o:'like',v:'%'+this.formInline.name+'%',}];
+      console.log(this.formInline.type);
       if (!['全部','*'].includes(this.formInline.type)) {
         where.push({f:'type',o:'=',v:this.formInline.type});
       }
@@ -143,6 +144,12 @@ export default {
         }).catch((err) => {
           console.log('getData',err);
         });
+    },
+    setShopClassgiy(val){
+      this.formInline.type = val;
+    },
+    setFormClassgiy(val){
+      this.form.type = val;
     },
     //分页
     handleSizeChange(val) {
@@ -183,7 +190,7 @@ export default {
         score:'',
         stock:'',
         storeid:'',
-        type:'200101',
+        type:0,
       }
       this.dialogFormVisible = true
     },

@@ -42,7 +42,9 @@
         <el-form-item label="分类编码" :label-width="formLabelWidth">
           <el-input type="number" v-model="form.type" auto-complete="off"></el-input>
         </el-form-item>
-        <shop-type :currobj="{value:form.parent,width:formLabelWidth,title:'父级'}"></shop-type>
+        <shop-type @setShopClassgiy="setFormClassgiy" :currobj="{table:'2',value:form.parent,type:'unshow',width:formLabelWidth,title:'父级'}"></shop-type>
+        <!-- <shop-type @setShopClassgiy="setFormClassgiy" :currobj="{table:'3',value:form.type,type:'unshow', width:formLabelWidth,title:'商品分类'}"></shop-type> -->
+
         <el-form-item label="地址" :label-width="formLabelWidth">
           <el-input v-model="form.url" auto-complete="off"></el-input>
         </el-form-item>
@@ -102,11 +104,13 @@ export default {
     onSubmit() {
       console.log('submit!');
     },
+    setFormClassgiy(val){
+      this.form.parent = val;
+    },
     getParentData(){
       this.$axios.post('/api/shopAllClassify',{
         where:{f:'1',o:'=',v:'1',t:'2'}
         }).then((result) => {
-          console.log(result);
           if(result.data&&result.data.status){
             this.pData.source = result.data.data ;
             let obj = this.pData.source;
