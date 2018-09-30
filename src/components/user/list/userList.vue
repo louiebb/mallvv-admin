@@ -55,22 +55,22 @@
       </div>
     </el-dialog>
 
-    <el-table :data="tableData" border max-height="450" style="width: 100% padding-top:20px;" :default-sort="{prop: 'id', order: 'descending'}">
+    <el-table :data="data.tableData" border max-height="450" style="width: 100% padding-top:20px;" :default-sort="{prop: 'id', order: 'descending'}">
       <el-table-column type="selection" width="55">
       </el-table-column>
       <el-table-column fixed prop="id" label="ID" width="120" sortable>
       </el-table-column>
-      <el-table-column prop="name" label="登录名" width="120">
+      <el-table-column prop="nickname" label="登录名" width="120">
       </el-table-column>
       <el-table-column prop="phone" label="手机" width="120">
       </el-table-column>
       <el-table-column prop="email" label="邮箱" width="160">
       </el-table-column>
-      <el-table-column prop="juese" label="角色" width="100">
+      <el-table-column prop="role" label="角色" width="100">
       </el-table-column>
-      <el-table-column prop="jointime" label="加入时间" width="120" sortable>
+      <el-table-column prop="regtime" label="加入时间" width="120" sortable>
       </el-table-column>
-      <el-table-column prop="zhuangtai" label="审核状态" width="80">
+      <el-table-column prop="state" label="审核状态" width="80">
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -93,7 +93,7 @@ export default {
       this.currentIndex = index
       this.dialogFormVisible = true
     },
-      handleDelete(index, row) {
+    handleDelete(index, row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -120,16 +120,34 @@ export default {
       // this.form.phone = reformat(this.form.phone)
       // this.tableData.push(this.form)
       this.dialogFormVisible = false
-    }
+    },
+    getuserData(){
+      let where =  [{f:'account',o:'like',v:'%%'}];
+      where = JSON.stringify(where);
+      this.$axios.get(encodeURI(`api/userlist?pageNo=${this.pageNo}&qty=${this.qty}&where=${where}`)).then(x=>{
+          if(x.data&&x.data.status){
+            this.data.tableData = x.data.data.data;
+            console.log(this.data.tableData);
+          }
+      }).catch(x=>console.log(x));
+    },
     },
     computed:{
 
     },
     data() {
       return {
+        //分页
+        pageNo:1,
+        qty:5,
+        total:0,
         dialogFormVisible: false,
         formLabelWidth: '80px',
         form: {},
+        data:{
+        tableData: []
+
+        },
         value6: '',
         currentPage3: 1,
         currentIndex: '',
@@ -137,63 +155,18 @@ export default {
           user: '',
           region: '',
         },
-        tableData: [{
-          id:'1001',
-          name: '王小虎',
-          phone:'18824357892',
-          email:'123@qq.com',
-          juese: '管理员1',
-          jointime: '2018-9-20',
-          zhuangtai: '通过'
-        }, {
-          id:'1002',
-          name: '王小虎',
-          phone:'18824357892',
-          email:'123@qq.com',
-          juese: '管理员1',
-          jointime: '2018-9-12',
-          zhuangtai: '通过'
-        },{
-          id:'1003',
-          name: '王小虎',
-          phone:'18824357892',
-          email:'123@qq.com',
-          juese: '管理员1',
-          jointime: '2018-9-30',
-          zhuangtai: '通过'
-        },{
-          id:'1004',
-          name: '王小虎',
-          phone:'18824357892',
-          email:'123@qq.com',
-          juese: '管理员1',
-          jointime: '2018-9-09',
-          zhuangtai: '通过'
-        },{
-          id:'1005',
-          name: '王小虎',
-          phone:'18824357892',
-          email:'123@qq.com',
-          juese: '管理员1',
-          jointime: '2018-9-03',
-          zhuangtai: '通过'
-        },{
-          id:'1007',
-          name: '王小虎',
-          phone:'18824357892',
-          email:'123@qq.com',
-          juese: '管理员1',
-          jointime: '2018-9-18',
-          zhuangtai: '通过'
-        }]
       }
+    },
+
+    created(){
+      this.getuserData();
     }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .userList{
-    line-height: 1em;
-  }
+.userList {
+  line-height: 1em;
+}
 </style>

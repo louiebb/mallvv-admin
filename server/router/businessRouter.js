@@ -83,19 +83,4 @@ module.exports = {
       });
     });
   },
-  User: function (app) {
-    var bodyParser = require('body-parser');
-    app.use(bodyParser.urlencoded());
-    app.get("/userlist", function (req, res) {
-      var obj = {
-        where: req.body.where,
-      }
-      user.select(obj, function (result) {
-        res.end(result);
-      });
-    });
-    app.post("/list", function (req, res) {
-
-    });
-  }
 }

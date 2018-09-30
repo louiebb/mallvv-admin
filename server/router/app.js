@@ -1,10 +1,10 @@
 var express = require("express");
 var app = express();
 
-var user = require('../js/user.js');
 var businessRouter = require('./businessRouter.js');
+var userRouter = require('./userRouter.js');
 var comrouter = require('./commonRouter.js');
-var routers = Object.assign({},businessRouter,comrouter);
+var routers = Object.assign({}, businessRouter, comrouter, userRouter);
 module.exports = {
 	start:function(port){
 		app.all("*", function(req, res,next){
@@ -24,6 +24,7 @@ module.exports = {
 		});
 		app.listen(port,'0.0.0.0');
 		routers.Shop(app);
+		routers.User(app);
 		routers.Comm(app);
 	}
 }
