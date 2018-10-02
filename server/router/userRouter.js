@@ -15,8 +15,30 @@ module.exports = {
          res.end(result);
        });
     });
-    app.post("/list", function (req, res) {
-
-    });
+    app.post("/userdeletebyid", function (req, res) {
+        var obj = {
+          where: req.body.where,
+        };
+        user.deletebyid(obj, function (result) {
+          res.end(result);
+        });
+      });
+      app.post("/userupdatebyid", function (req, res) {
+        var obj = {
+          values: req.body.values,
+          where: req.body.where,
+        };
+        user.updatebyid(obj, function (result) {
+          res.end(result);
+        });
+      });
+      app.post("/userAdd", function (req, res) {
+        var obj = {
+          values: req.body.values,
+        };
+        user.add(obj, function (result) {
+          res.end(result);
+        });
+      });
   }
 }

@@ -247,42 +247,42 @@ export default {
       })
     },
     handleDelete(index, row) {
-    const swalWithBootstrapButtons = this.$swal.mixin({
-      confirmButtonClass: 'btn btn-success',
-      cancelButtonClass: 'btn btn-danger',
-      buttonsStyling: false,
-    })
+      const swalWithBootstrapButtons = this.$swal.mixin({
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        buttonsStyling: false,
+      })
 
-    swalWithBootstrapButtons({
-      title: 'Are you sure?',
-      text: "You will delete this shop!",
-      type: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, cancel!',
-      reverseButtons: true
-    }).then((result) => {
-      if (result.value) {
-        let id = this.tableData[index].id;
-        this.delete(id).then(x=>{
-          this.tableData.splice(index, 1);
-        });
-        swalWithBootstrapButtons(
-          'Deleted!',
-          'Shop has been deleted.',
-          'success'
-        )
-      } else if (
-        // Read more about handling dismissals
-        result.dismiss === this.$swal.DismissReason.cancel
-      ) {
-        swalWithBootstrapButtons(
-          'Cancelled',
-          'Your delete  is cancel :)',
-          'error'
-        )
-      }
-    });
+      swalWithBootstrapButtons({
+        title: 'Are you sure?',
+        text: "You will delete this shop!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+          let id = this.tableData[index].id;
+          this.delete(id).then(x=>{
+            this.tableData.splice(index, 1);
+          });
+          swalWithBootstrapButtons(
+            'Deleted!',
+            'Shop has been deleted.',
+            'success'
+          )
+        } else if (
+          // Read more about handling dismissals
+          result.dismiss === this.$swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons(
+            'Cancelled',
+            'Your delete  is cancel :)',
+            'error'
+          )
+        }
+      });
     },
 },
   created(){

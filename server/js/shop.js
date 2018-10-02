@@ -11,7 +11,6 @@ let business = {
     let condition = 'and' + data.where.map(x => ` ${x.f} ${x.o} '${x.v}' `).join('and');
     let sql = `select * from ${shoptable} where 1=1 ${condition} limit ${(data.pageNo-1)*data.qty} , ${data.qty}`;
     let sql2 = `select count(*) as total  from ${shoptable} where 1=1 ${condition}`;
-    console.log(sql);
     db.pageselect(sql, sql2, function (res) {
       callback(res);
     })
@@ -19,7 +18,7 @@ let business = {
   select: function (data, callback) {
     let condition = 'and' + data.where.map(x => ` ${x.f} ${x.o} '${x.v}' `).join('and');
     let sql = `select * from ${shoptable} where 1=1 ${condition}`;
-    db.select(sql, function (res) {
+    db.common(sql, function (res) {
       callback(res);
     })
   },
@@ -28,7 +27,7 @@ let business = {
     let condition = `${where.f} ${where.o} '${where.v}' `;
     let sql = `delete from ${shoptable} where ${condition}`;
 
-    db.delete(sql, function (res) {
+    db.common(sql, function (res) {
       callback(res);
     })
   },
@@ -43,7 +42,7 @@ let business = {
     }
     let condition = valarr.map(x => ` ${x.f} = '${x.v}' `).join(',');
     let sql = `update ${shoptable} set ${condition} where ${data.where.f} ${data.where.o} '${data.where.v}'`;
-    db.update(sql, function (res) {
+    db.common(sql, function (res) {
       callback(res);
     })
   },
@@ -58,7 +57,7 @@ let business = {
     } else if (where.t == '2') {
       sql = `select id,name,type  from ${typetable2} where  ${condition}`;
     }
-    db.select(sql, function (res) {
+    db.common(sql, function (res) {
       callback(res);
     })
   },
@@ -81,7 +80,7 @@ let business = {
     }
     let condition = valarr.map(x => ` ${x.f} = '${x.v}' `).join(',');
     let sql = `update ${typetable3} set ${condition} where ${data.where.f} ${data.where.o} '${data.where.v}'`;
-    db.update(sql, function (res) {
+    db.common(sql, function (res) {
       callback(res);
     })
   },
@@ -89,7 +88,7 @@ let business = {
     let where = data.where;
     let condition = `${where.f} ${where.o} '${where.v}' `;
     let sql = `delete from ${typetable3} where ${condition}`;
-    db.delete(sql, function (res) {
+    db.common(sql, function (res) {
       callback(res);
     })
   },
@@ -104,8 +103,24 @@ let business = {
     farr = farr.join(',');
     varr = varr.join(',');
     let sql = `INSERT INTO ${typetable3} (${farr}) VALUE (${varr})`;
-    console.log(sql);
-    db.delete(sql, function (res) {
+    db.common(sql, function (res) {
+      callback(res);
+    })
+  },
+  shopadd: function (data, callback) {
+    let values = data.values;
+    let farr = [];
+    let varr = [];
+    for (let key in values) {
+      farr.push(key);
+      varr.push(`'${values[key]}'`);
+    }
+    farr = farr.join(',');
+    varr = varr.join(',');
+    let sql = `INSERT INTO ${shoptable} (${farr}) VALUE (${varr})`;
+    console.log(111111,sql);
+
+    db.common(sql, function (res) {
       callback(res);
     })
   },

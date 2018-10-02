@@ -21,6 +21,8 @@ import { default as swal } from 'sweetalert2'
 
 Vue.prototype.$swal = swal;
 
+//日期格式
+let dateUtils =  require('date-utils');
 
 
 // 引入axios

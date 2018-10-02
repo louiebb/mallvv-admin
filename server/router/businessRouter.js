@@ -82,5 +82,13 @@ module.exports = {
         res.end(result);
       });
     });
+    app.post("/shopAdd", function (req, res) {
+      var obj = {
+        values: req.body.values,
+      };
+      shop.shopadd(obj, function (result) {
+        res.end(result);
+      });
+    });
   },
 }

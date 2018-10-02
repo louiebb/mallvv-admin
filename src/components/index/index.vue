@@ -39,7 +39,6 @@ export default {
     background-color: rgba(192, 68, 11, 0.86);;
     color: #333;
     text-align: center;
-    /* line-height: 60px; */
     display: flex;
   }
 
@@ -50,8 +49,6 @@ export default {
 
   .el-main {
      background-color: rgb(238, 238, 238);
-    color: #333;
-    text-align: center;
   }
 
   body > .el-container {

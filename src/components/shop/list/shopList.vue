@@ -3,7 +3,7 @@
 
     <el-form :inline="true" :model="formInline" class="nav demo-form-inline">
       <el-form-item>
-        <el-button size="small" type="primary" @click="add">新增</el-button>
+        <el-button size="small" type="primary" @click="addOpen">新增</el-button>
       </el-form-item>
       <el-form-item label="关键字">
         <el-input clearable v-model="formInline.name" placeholder="请输入商品名称"></el-input>
@@ -82,7 +82,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="handleUpdate(form)">确 定</el-button>
+        <el-button type="primary" v-if="!dialogStatus" @click="handleUpdate(form)">确 定</el-button>
+        <el-button type="primary" v-if="dialogStatus" @click="handleAdd(form)">添 加</el-button>
       </div>
     </el-dialog>
   </div>
@@ -109,6 +110,7 @@ export default {
       form: {},
       formLabelWidth:'80px',
       currentIndex: '',
+      dialogStatus:true
     }
   },
   computed:{
@@ -167,19 +169,34 @@ export default {
         console.log(row, event, column, event.currentTarget)
     },
     handleEdit(index, row) {
+        this.dialogStatus = false;
         this.form = this.tableData[index];
         this.currentIndex = index;
         this.dialogFormVisible = true;
         console.log("edit",index, row);
     },
-    add() {
+    add(data){
+      let promise = new Promise((resolve,reject)=>{
+        this.$axios.post('/api/shopAdd',{
+          values:data,
+        }).then((result) => {
+          if(result.data&&result.data.status){
+            resolve(result.data);
+          }
+        }).catch((err) => {
+          console.log('add',err);
+        });
+      })
+      return promise;
+    },
+    addOpen() {
+      this.dialogStatus = true;
       this.form = {
         ArtNo:'',
         brand:'',
-        describe:'',
+        mydescribe:'',
         discount:'',
         freeshipping:'',
-        id:'',
         img:'',
         imglist:'',
         name:'',
@@ -193,6 +210,24 @@ export default {
         type:0,
       }
       this.dialogFormVisible = true
+    },
+    handleAdd(data){
+      this.add(data).then(x=>{
+        if(x.status){
+          this.dialogFormVisible = false;
+          this.$swal(
+              '添加成功',
+              '',
+              'success'
+            )
+        }else{
+           this.$swal(
+              '添加失败',
+              '请再次尝试修改',
+              'error'
+            )
+        }
+      })
     },
     cancel() {
       this.dialogFormVisible = false;
@@ -252,7 +287,6 @@ export default {
         cancelButtonClass: 'btn btn-danger',
         buttonsStyling: false,
       })
-
       swalWithBootstrapButtons({
         title: 'Are you sure?',
         text: "You will delete this shop!",
