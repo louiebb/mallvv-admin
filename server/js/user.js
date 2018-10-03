@@ -92,8 +92,14 @@ let userBusiness = {
       let sql = `INSERT INTO ${usertable} (${farr}) VALUE (${varr})`;
       db.common(sql, function (res) {
         callback(res);
-      })
+      });
     },
+    userrole(cb){
+      let sql = `select * from t_role `;
+      db.common(sql, function (res) {
+        cb(res);
+      });
+    }
 }
 
 module.exports = userBusiness ;

@@ -1,30 +1,31 @@
 <template>
   <div class="userList">
-    <el-form :inline="true" :model="formInline"  class="demo-form-inline" style="height:50px;">
-      <el-form-item label="登录名">
-        <el-input placeholder="请输入"></el-input>
+    <el-form :inline="true" :model="formInline" label-width="40px" size="mini" style="height:90px;">
+      <el-form-item label="账号" prop="account">
+        <el-input size="mini" placeholder="请输入" v-model="formInline.account"></el-input>
       </el-form-item>
-      <el-form-item label="手机">
-        <el-input placeholder="请输入"></el-input>
+      <el-form-item size="mini" label="别名" prop="nickname">
+        <el-input size="mini" placeholder="请输入" v-model="formInline.nickname"></el-input>
       </el-form-item>
-      <el-form-item label="邮箱">
-        <el-input placeholder="请输入"></el-input>
+      <el-form-item label="手机" prop="phone">
+        <el-input size="mini" placeholder="请输入" v-model="formInline.phone"></el-input>
       </el-form-item>
+      <el-form-item label="邮箱" prop="email">
+        <el-input size="mini" placeholder="请输入" v-model="formInline.email"></el-input>
+      </el-form-item>
+      <user-role  @setUserRoleType="setUserRoleType" :currobj="{value:formInline.role,type:'show',width:formLabelWidth,title:'角色'}"></user-role>
       <el-form-item>
-        <el-form-item label="角色">
-          <el-select v-model="formInline.region" placeholder="管理员">
-            <el-option label="管理员1" value="shanghai"></el-option>
-            <el-option label="管理员2" value="beijing"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-button type="primary">查询</el-button>
+        <el-button size="mini" type="primary">查询</el-button>
       </el-form-item>
     </el-form>
 
-    <el-row style="margin-bottom:10px;">
+    <el-form size="mini">
+      <el-form-item>
       <el-button type="info" @click="handleSelectDelete">删除选中</el-button>
       <el-button type="info" @click="addOpend()">添加</el-button>
-    </el-row>
+      </el-form-item>
+    </el-form>
+
     <!-- <el-table :data="data.tableData" border max-height="450" style="width: 100% padding-top:20px;" :default-sort="{prop: 'id', order: 'descending'}"> 根据id倒叙 -->
     <el-table :data="data.tableData" border max-height="450" @selection-change="changeFun">
       <el-table-column type="selection" >
@@ -32,13 +33,18 @@
       <el-table-column fixed header-align="center"  show-overflow-tooltip resizable align="center" type="index" width="50"></el-table-column>
       <el-table-column  prop="id" label="ID" >
       </el-table-column>
-      <el-table-column prop="nickname" label="登录名">
+      <el-table-column prop="nickname" label="别名">
+      </el-table-column>
+      <el-table-column prop="account" label="账号">
       </el-table-column>
       <el-table-column prop="phone" label="手机" width="120" >
       </el-table-column>
       <el-table-column prop="email" label="邮箱">
       </el-table-column>
       <el-table-column prop="role" label="角色" >
+        <template slot-scope="scope">
+          <span>{{userRoleData[scope.row.role]}}</span>
+        </template>
       </el-table-column>
       <el-table-column label="数据库时间" width="160" >
         <template slot-scope="scope">
@@ -71,8 +77,11 @@
         <!-- <el-form-item label="ID" :label-width="formLabelWidth">
           <el-input v-model="form.id" auto-complete="off"></el-input>
         </el-form-item> -->
-        <el-form-item label="登录名" :label-width="formLabelWidth">
+         <el-form-item label="账号" :label-width="formLabelWidth">
           <el-input v-model="form.account" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="别名" :label-width="formLabelWidth">
+          <el-input v-model="form.nickname" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="手机" :label-width="formLabelWidth">
           <el-input v-model="form.phone" auto-complete="off"></el-input>
@@ -80,9 +89,7 @@
         <el-form-item label="邮箱" :label-width="formLabelWidth">
           <el-input v-model="form.email" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="角色" :label-width="formLabelWidth">
-          <el-input v-model="form.nickname" auto-complete="off"></el-input>
-        </el-form-item>
+        <user-role  @setUserRoleType="setFormUserRole" :currobj="{value:form.role,type:'unshow',width:formLabelWidth,title:'角色'}"></user-role>
         <el-form-item label="加入日期" :label-width="formLabelWidth">
           <el-date-picker v-model="form.jointime" type="date" placeholder="选择日期">
           </el-date-picker>
@@ -98,10 +105,12 @@
         <el-button type="primary" v-if="dialogStatus" @click="handleAdd(form)">添 加</el-button>
       </div>
     </el-dialog>
+    <div>{{userRoleData}}</div>
   </div>
 </template>
 
 <script>
+  import UserRole from '../common/userdropdown';
 export default {
   name: 'userList',
   filters:{
@@ -109,7 +118,16 @@ export default {
       return (new Date(val)).toFormat("YYYY-MM-DD HH24:MI:SS")
     }
   },
+  components:{
+    UserRole
+  },
    methods: {
+    setUserRoleType(val){
+       this.formInline.role = val;
+     },
+    setFormUserRole(val){
+      this.form.role = val;
+     },
      //多选
     changeFun(val) {
       this.multipleSelection = val;
@@ -311,11 +329,16 @@ export default {
       })
       return promise;
     },
-    },
-    computed:{
-
-    },
-    data() {
+  },
+  computed:{
+    userRoleData:{
+      get(){
+        return this.$store.state.user.userRole.formate;
+      },
+      set(){}
+    }
+  },
+  data() {
       return {
         //分页
         pageNo:1,
@@ -334,23 +357,29 @@ export default {
         },
         //搜索
         formInline: {
-          user: '',
-          region: '',
+          nickname: '',
+          role: '全部',
+          phone:'',
+          email:'',
+          account:'',
         },
         //删除多个
         multipleSelection:[]
       }
-    },
-    created(){
+  },
+  created(){
       this.getuserData();
-    }
+  }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped>
 .userList {
   line-height: 1em;
   text-align: center;
+  .el-form-item--mini.el-form-item{
+    margin-bottom: 10px;
+  }
 }
 </style>

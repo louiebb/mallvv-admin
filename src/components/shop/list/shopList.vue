@@ -8,7 +8,7 @@
       <el-form-item label="关键字">
         <el-input clearable v-model="formInline.name" placeholder="请输入商品名称"></el-input>
       </el-form-item>
-      <shop-type @setShopClassgiy="setShopClassgiy" :currobj="{table:'3',value:formInline.type,type:'show',width:formLabelWidth,title:'商品分类'}"></shop-type>
+      <shop-type @setShopType="setShopType" :currobj="{table:'3',value:formInline.type,type:'show',width:formLabelWidth,title:'商品分类'}"></shop-type>
       <el-form-item>
         <el-button size="small" type="primary" @click="onSearch"><i class="el-icon-search"></i></el-button>
       </el-form-item>
@@ -66,7 +66,7 @@
         <el-form-item label="商品名称" :label-width="formLabelWidth">
           <el-input v-model="form.name" auto-complete="off"></el-input>
         </el-form-item>
-        <shop-type @setShopClassgiy="setFormClassgiy" :currobj="{table:'3',value:Number(form.type),type:'unshow', width:formLabelWidth,title:'商品分类'}"></shop-type>
+        <shop-type @setShopType="setFormClassgiy" :currobj="{table:'3',value:Number(form.type),type:'unshow', width:formLabelWidth,title:'商品分类'}"></shop-type>
         <el-form-item label="库存" :label-width="formLabelWidth">
           <el-input v-model="form.stock" auto-complete="off"></el-input>
         </el-form-item>
@@ -147,7 +147,7 @@ export default {
           console.log('getData',err);
         });
     },
-    setShopClassgiy(val){
+    setShopType(val){
       this.formInline.type = val;
     },
     setFormClassgiy(val){

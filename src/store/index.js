@@ -10,11 +10,13 @@ Vue.use(Vuex);
 import header from './header';
 import com from './common';
 import shop from './shop';
+import user from './user';
 
 export default new Vuex.Store({
   modules:{
     header,
     com,
     shop,
+    user,
   }
 })

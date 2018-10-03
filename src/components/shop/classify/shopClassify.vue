@@ -42,8 +42,8 @@
         <el-form-item label="分类编码" :label-width="formLabelWidth">
           <el-input type="number" v-model="form.type" auto-complete="off"></el-input>
         </el-form-item>
-        <shop-type @setShopClassgiy="setFormClassgiy" :currobj="{table:'2',value:form.parent,type:'unshow',width:formLabelWidth,title:'父级'}"></shop-type>
-        <!-- <shop-type @setShopClassgiy="setFormClassgiy" :currobj="{table:'3',value:form.type,type:'unshow', width:formLabelWidth,title:'商品分类'}"></shop-type> -->
+        <shop-type @setShopType="setShopType" :currobj="{table:'2',value:form.parent,type:'unshow',width:formLabelWidth,title:'父级'}"></shop-type>
+        <!-- <shop-type @setShopType="setShopType" :currobj="{table:'3',value:form.type,type:'unshow', width:formLabelWidth,title:'商品分类'}"></shop-type> -->
 
         <el-form-item label="地址" :label-width="formLabelWidth">
           <el-input v-model="form.url" auto-complete="off"></el-input>
@@ -104,7 +104,7 @@ export default {
     onSubmit() {
       console.log('submit!');
     },
-    setFormClassgiy(val){
+    setShopType(val){
       this.form.parent = val;
     },
     getParentData(){

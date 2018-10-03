@@ -1,9 +1,9 @@
 <template>
   <el-form-item :label="currobj.title" :label-width="currobj.width">
     <el-select v-model="currobj.value" placeholder="请选择分类">
-      <el-option v-for="cls in classfiyData.source" v-if="allshow(cls.name)" :key="cls.type" @click.native="setShopClassgiy" :value="cls.type" :label="cls.name">
+      <el-option v-for="cls in classfiyData.source" v-if="allshow(cls.name)" :key="cls.type" @click.native="setShopType" :value="cls.type" :label="cls.name">
         <span style="float: left">{{ cls.name }}</span>
-          <!-- -{{currobj.value === cls.type}} {{typeof currobj.value}}-{{typeof cls.type}} -->
+          <!-- -{{currobj.value === cls.role}} {{typeof currobj.value}}-{{typeof cls.role}} -->
         <span style="float: right; color: #8492a6; font-size: 13px">{{ cls.type }}</span>
       </el-option>
     </el-select>
@@ -22,6 +22,7 @@ export default {
   },
   methods:{
     allshow(val){
+      console.log(val,this.currobj.type);
       if(this.currobj.type != 'show'){
         if (val=='全部' ) {
           return false;
@@ -29,8 +30,8 @@ export default {
       }
       return true;
     },
-    setShopClassgiy(){
-      this.$emit('setShopClassgiy',this.currobj.value);
+    setShopType(){
+      this.$emit('setShopType',this.currobj.value);
     },
     getClassfiyData(){
       this.$axios.post('/api/shopAllClassify',{
