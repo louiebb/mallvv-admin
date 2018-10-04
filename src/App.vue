@@ -11,7 +11,7 @@ export default {
 </script>
 
 <style>
-#app {
+#app,html,body {
   height: 100%;
   position: relative;
 }

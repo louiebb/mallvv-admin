@@ -1,169 +1,142 @@
 <template>
   <div class="login">
-    <div>
-      <div class="small">
 
-        <!-- <img src="./assets/logo.png"> -->
-        <h2>商品后台管理系统</h2>
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="0px" class="demo-ruleForm login-container">
+    <div class="logo"><img src="../../assets/logo.png" alt="" srcset=""></div>
+    <h3 class="title">XXX系统登录</h3>
+    <el-form-item prop="account">
+      <el-input prefix-icon="el-icon-message" type="text" v-model="ruleForm.account" auto-complete="off" placeholder="账号"></el-input>
+    </el-form-item>
+    <el-form-item prop="password">
+      <el-input prefix-icon="el-icon-document" type="password" v-model="ruleForm.password" auto-complete="off" placeholder="密码"></el-input>
+    </el-form-item>
+    <el-form-item style="width:100%;">
+      <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit" :loading="logining">登录</el-button>
+      <br>
+      <el-button class="reset" type="info" style="width:100%;" @click.native.prevent="handleReset('ruleForm')">重置</el-button>
+    </el-form-item>
 
-        <el-form :model="ruleForm2" status-icon :rules="rules2" label-position="right" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
-          <el-form-item label="用户名：" prop="user">
-            <el-input v-model.string="ruleForm2.user"></el-input>
-          </el-form-item>
-
-          <el-form-item label="密码：" prop="pass">
-            <el-input type="password" v-model="ruleForm2.pass" autocomplete="off"></el-input>
-          </el-form-item>
-
-          <el-form-item label="确认密码：" prop="checkPass">
-            <el-input type="password" v-model="ruleForm2.checkPass" autocomplete="off"></el-input>
-          </el-form-item>
-
-          <el-form-item type="flex" justify="end" label="">
-            <el-button class="btn" type="primary"  @click.native="submitForm('ruleForm2')">登录</el-button>
-          </el-form-item>
-          <el-checkbox v-model="checked" class="jizhu">
-            <div style="color:red;">记住密码</div>
-          </el-checkbox>
-          <router-link to="login">
-            <div style="float:right;color:red;">忘记密码</div>
-          </router-link>
-        </el-form>
-      </div>
-    </div>
+    <el-form-item>
+    <el-row type="flex" class="row-bg" justify="space-between">
+      <el-col :span="6"><el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox></el-col>
+      <el-col :span="6"><a class="text-info forgetpwd">忘记密码?</a></el-col>
+    </el-row>
+    </el-form-item>
+  </el-form>
   </div>
 </template>
 
 <script>
 export default {
   name: 'login',
-  data() {
-       var checkUser = (rule, value, callback) => {
-        // if(!/^\S{6,20}$/.test(value)){
-        //   callback(new Error('密码不能有空格'));
-        // }
-        if (!value) {
-          return callback(new Error('用户名不能为空'));
-        }else {
-              callback();
-            }
-      };
+   data() {
+      var validateAccount = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('账号验证失败'));
+          return false;
+        }
+        callback();
 
+      };
       var validatePass = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('请输入密码'));
-        } else {
-          if (this.ruleForm2.checkPass !== '') {
-
-            this.$refs.ruleForm2.validateField('checkPass');
-          }
-          callback();
+          callback(new Error('密码验证失败'));
+          return false;
         }
-      };
-      var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm2.pass) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
-        }
-      };
+        callback();
 
+      };
       return {
-        checked: false,
-        ruleForm2: {
-          pass: '',
-          checkPass: '',
-          user: ''
+        logining: false,
+        ruleForm: {
+          account: 'louiebb',
+          password: '123'
         },
-        rules2: {
-          pass: [
-            { validator: validatePass, trigger: 'blur' }
+        rules: {
+          account: [
+            { required: true, message: '请输入账号', trigger: 'blur' },
+            { validator: validateAccount }
           ],
-          checkPass: [
-            { validator: validatePass2, trigger: 'blur' }
-          ],
-          user: [
-            { validator: checkUser, trigger: 'blur' }
+          password: [
+            { required: true, message: '请输入密码', trigger: 'blur' },
+            { validator: validatePass }
           ]
-        }
+        },
+        checked: true
       };
     },
-     methods: {
-      selectUser(){
-        let checked = false;
-        //请求
-        //
-        //
-        //请求返回信息
-        //
-        return checked;
-      },
+    methods: {
+      handleReset(formName) {
+        this.$refs[formName].resetFields();
+        console.log(666);
 
-      submitForm(formName) {
-        //
-        this.$refs[formName].validate((valid) => {
+      },
+      handleSubmit(ev) {
+        var _this = this;
+        this.$refs.ruleForm.validate((valid) => {
           if (valid) {
-            this.$router.push({name:'Home'});
-            }else {
+            this.logining = true;
+            var loginParams = { username: this.ruleForm.account, password: this.ruleForm.password };
+            requestLogin(loginParams).then(data => {
+              this.logining = false;
+              let { msg, code, user } = data;
+              if (code !== 200) {
+                this.$message({
+                  message: msg,
+                  type: 'error'
+                });
+              } else {
+                sessionStorage.setItem('user', JSON.stringify(user));
+                this.$router.push({ name:'index' });
+              }
+            });
+          } else {
+            console.log('error submit!!');
             return false;
           }
         });
-
-      },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
       }
     }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
-html,
-body,
-.login {
-  height: 100%;
-}
-</style>
 
-<style scoped>
-.app img {
-  display: block;
-  margin: 0 auto;
-  height: 100px;
-}
-h2 {
-  text-align: center;
-  color: #fff;
-}
-/*.app{position: absolute; top:0; bottom:0; right:0; left:0; margin:auto;border:1px solid black; width:500px;height:480px;}*/
-.small {
-  width: 405px;
-  height: 345px;
-  background: rgba(41, 42, 46, 0.73);
-  padding: 10px;
-  border-radius: 15px;
-  padding-right: 15px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-.btn {
-  height: 38px;
-}
-.el-form-item {
-    margin-bottom: 10px;
-}
-.label {
-  border: 1px solid black;
-}
-.jizhu {
-  margin-left: 100px;
-}
-.login {
-  background: url(../../../static/img/login/bg.png) no-repeat;
-}
+<style lang="scss" scoped>
+  .login{
+    height: 100% ;
+  }
+  .login-container {
+    /*box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);*/
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    background-clip: padding-box;
+    position: relative;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    width: 350px;
+    padding: 35px 35px 15px 35px;
+    background: #fff;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 0 25px #cac6c6;
+    .title {
+      margin: 0px auto 40px auto;
+      text-align: center;
+      color: #505458;
+    }
+    .remember {
+      margin: 0px 0px 35px 0px;
+    }
+  }
+  .logo{
+    text-align: center;
+  }
+  .forgetpwd{
+    cursor: pointer;
+  }
+  .reset{
+    margin-top: 10px;
+  }
 </style>

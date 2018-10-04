@@ -15,7 +15,7 @@
       </el-form-item>
       <user-role  @setUserRoleType="setUserRoleType" :currobj="{value:formInline.role,type:'show',width:formLabelWidth,title:'角色'}"></user-role>
       <el-form-item>
-        <el-button size="mini" type="primary">查询</el-button>
+        <el-button size="mini" @click="getuserData" type="primary">查询</el-button>
       </el-form-item>
     </el-form>
 
@@ -70,7 +70,6 @@
     </el-table>
     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChangePage" :current-page="pageNo" :page-sizes="[5, 10, 15, 20]" :page-size="qty" layout="total, sizes, prev, pager, next, jumper" :total="total">
     </el-pagination>
-
 
     <el-dialog title="编辑" :visible.sync="dialogFormVisible">
       <el-form :model="form">
@@ -305,7 +304,18 @@ export default {
       return promise;
     },
     getuserData(){
-      let where =  [{f:'account',o:'like',v:'%%'}];
+      let where =  [
+        {f:'nickname',o:'like',v:`%${this.formInline.nickname}%`},
+        {f:'phone',o:'like',v:`%${this.formInline.phone}%`},
+        {f:'email',o:'like',v:`%${this.formInline.email}%`},
+        {f:'account',o:'like',v:`%${this.formInline.account}%`},
+        ];
+        if (this.formInline.role=='全部') {
+          where.push({f:'role',o:'like',v:`%%`});
+        }else{
+          where.push({f:'role',o:'=',v:`${this.formInline.role}`});
+        }
+        console.log(where);
       where = JSON.stringify(where);
       this.$axios.get(encodeURI(`api/userlist?pageNo=${this.pageNo}&qty=${this.qty}&where=${where}`)).then(x=>{
           if(x.data&&x.data.status){
