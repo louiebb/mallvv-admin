@@ -37,13 +37,13 @@ export default {
         }
         clearTimeout(this.timer);
         this.timer = setTimeout(()=>{
-           this.checkedAccount(value,function(x){
-             if(x.length<=0){
+            this.checkedAccount(value,function(x){
+              if(x.length<=0){
               callback(new Error('账号不存在'));
-             }else{
+              }else{
               callback();
-             }
-           });
+              }
+            });
         },800);
 
 
@@ -109,8 +109,15 @@ export default {
               if(data.length){
                 this.$store.commit('setaccountData',data[0]);
                 sessionStorage.user = JSON.stringify(data[0]);
-                 this.$router.push({ name:'index' });
+                this.$router.push({ name:'index' });
+                return ;
               }
+
+               this.$swal(
+                  '登录失败',
+                  '',
+                  'warning'
+                )
               // console.log(1111,this.$store.state.user.accountData);
 
             }).catch(x=>console.log(x));
@@ -134,7 +141,10 @@ export default {
           }
         });
       }
+    },
+    created(){
     }
+
 }
 </script>
 

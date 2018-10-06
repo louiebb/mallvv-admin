@@ -294,7 +294,6 @@ export default {
       this.dialogFormVisible = false
     },
     update(data){
-      console.log(11111,data);
        let promise = new Promise((resolve,reject)=>{
         this.$axios.post('/api/userupdatebyid',{
           where:{f:'id',o:'=',v:data.id},

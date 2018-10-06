@@ -1,21 +1,21 @@
 <template>
   <div class="userPwd">
     <div style="height:30px;border-bottom:1px solid #fff;light-height:30px;font-size:20px;">修改密码</div>
-    <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm" style="margin-top:20px;min-height:500px;">
-      <el-form-item label="当前密码：" prop="user">
-        <el-input v-model.string="ruleForm2.user" class="inp"></el-input>
+    <el-form :model="ruleForm" status-icon :rules="rules2" ref="ruleForm" label-width="100px" class="demo-ruleForm" style="margin-top:20px;min-height:500px;">
+      <el-form-item label="当前密码：" prop="currPwd">
+        <el-input v-model="ruleForm.currPwd" class="inp"></el-input>
       </el-form-item>
 
       <el-form-item label="新密码：" prop="pass">
-        <el-input type="password" v-model="ruleForm2.pass" autocomplete="off" class="inp"></el-input>
+        <el-input type="password" v-model="ruleForm.pass" autocomplete="off" class="inp"></el-input>
       </el-form-item>
 
       <el-form-item label="确认密码：" prop="checkPass">
-        <el-input type="password" v-model="ruleForm2.checkPass" autocomplete="off" class="inp"></el-input>
+        <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" class="inp"></el-input>
       </el-form-item>
 
       <el-row>
-        <el-button class="btn" type="primary" @click.native="submitForm('ruleForm2')">
+        <el-button class="btn" type="primary" @click.native="submitForm('ruleForm')">
           <div>确认修改</div>
         </el-button>
       </el-row>
@@ -27,24 +27,24 @@
 export default {
   name: 'userPwd',
    data() {
-       var checkUser = (rule, value, callback) => {
-        // if(!/^\S{6,20}$/.test(value)){
-        //   callback(new Error('密码不能有空格'));
-        // }
+       var checkPassWord = (rule, value, callback) => {
         if (!value) {
-          return callback(new Error('用户名不能为空'));
+          return callback(new Error('原密码不能为空'));
         }else {
-              callback();
-            }
+          if (this.user.password!=value) {
+           return callback(new Error('原密码不正确!'));
+          }
+          callback();
+        }
       };
 
       var validatePass = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请输入密码'));
         } else {
-          if (this.ruleForm2.checkPass !== '') {
+          if (this.ruleForm.checkPass !== '') {
 
-            this.$refs.ruleForm2.validateField('checkPass');
+            this.$refs.ruleForm.validateField('checkPass');
           }
           callback();
         }
@@ -52,7 +52,7 @@ export default {
       var validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm2.pass) {
+        } else if (value !== this.ruleForm.pass) {
           callback(new Error('两次输入密码不一致!'));
         } else {
           callback();
@@ -61,11 +61,12 @@ export default {
 
       return {
         checked: false,
-        ruleForm2: {
+        ruleForm: {
           pass: '',
           checkPass: '',
-          user: ''
+          currPwd: ''
         },
+        user:JSON.parse(sessionStorage.getItem('user')),
         rules2: {
           pass: [
             { validator: validatePass, trigger: 'blur' }
@@ -73,45 +74,54 @@ export default {
           checkPass: [
             { validator: validatePass2, trigger: 'blur' }
           ],
-          user: [
-            { validator: checkUser, trigger: 'blur' }
+          currPwd: [
+            { validator: checkPassWord, trigger: 'blur' }
           ]
         }
       };
     },
      methods: {
-      selectUser(){
-        let checked = false;
-        //请求
-        //
-        //
-        //请求返回信息
-        //
-        return checked;
-      },
-
       submitForm(formName) {
-        //
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.$router.push({name:'Home'});
-            }else {
+          this.user.password = this.ruleForm.checkPass;
+          this.update(this.user).then(x=>{
+            if (x.status) {
+              sessionStorage.setItem('user',JSON.stringify(this.user));
+              this.$swal(
+                  '修改成功',
+                  '',
+                  'success'
+                )
+            }
+          })
+          }else {
             return false;
           }
         });
 
       },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
-      }
+      update(data){
+       let promise = new Promise((resolve,reject)=>{
+        this.$axios.post('/api/userupdatebyid',{
+          where:{f:'id',o:'=',v:data.id},
+          values:data,
+        }).then((result) => {
+          if(result.data&&result.data.status){
+            resolve(result.data);
+          }
+        }).catch((err) => {
+          console.log('update',err);
+        });
+      })
+      return promise;
+    },
     }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-<style>
-/*.app{position: absolute; top:0; bottom:0; right:0; left:0; margin:auto;border:1px solid black; width:500px;height:480px;}*/
 .small {
   position: absolute;
   top: 0;

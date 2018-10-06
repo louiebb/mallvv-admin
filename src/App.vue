@@ -15,4 +15,7 @@ export default {
   height: 100%;
   position: relative;
 }
+.html,body::-webkit-scrollbar { width: 0 !important }
+.html,body { -ms-overflow-style: none; }
+.html,body { overflow: -moz-scrollbars-none; }
 </style>

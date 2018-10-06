@@ -51,7 +51,7 @@ let userBusiness = {
       let condition = data.where.map(x => ` ${x.f} ${x.o} '${x.v}' `).join('and');
       this.userexist(condition,function(){
         let sql = `select * from ${usertable} where ${condition}`;
-        //  console.log(sql);
+        console.log(sql);
         db.common(sql, function (res) {
           callback(res);
         })
@@ -112,7 +112,9 @@ let userBusiness = {
       let currdata = data.values;
       currdata.state = currdata.state ? 1 : 0;
       currdata.jointime = (new Date(currdata.jointime)).toFormat("YYYY-MM-DD HH24:MI:SS");
+
       delete currdata.regtime;
+      delete currdata.expire;
       for (let key in currdata) {
         valarr.push({
           f: key,

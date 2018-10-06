@@ -8,7 +8,7 @@
       欢迎{{user}}登录我们的{{name}}系统，在这你可以猥琐欲为
     </p>
     <div class="out">
-       <el-button  type="danger"  size="mini" plain>退出</el-button>
+       <el-button  type="danger" @click="loginout"  size="mini" plain>退出</el-button>
     </div>
   </div>
 </template>
@@ -24,7 +24,10 @@ export default {
     };
   },
   methods: {
-
+    loginout(){
+      sessionStorage.clear();
+      this.$router.push({name:'login'});
+    }
   }
 };
 </script>
