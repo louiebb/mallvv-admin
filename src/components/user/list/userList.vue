@@ -228,11 +228,17 @@ export default {
       if (idArrs.length) {
         idArrs.forEach(id=>{
             this.delete(id).then(x=>{
+              clearTimeout(this.moretimer);
+              this.moretimer = setTimeout(()=>{
+                  this.getuserData();
+                  this.$swal('删除成功','','success');
+              },800);
             //删除成功后重新获取数据
-            this.getuserData();
           });
-        })
+        });
       }
+
+
     },
     handleAdd(data){
       this.add(data).then(x=>{
@@ -315,7 +321,6 @@ export default {
         }else{
           where.push({f:'role',o:'=',v:`${this.formInline.role}`});
         }
-        console.log(where);
       where = JSON.stringify(where);
       this.$axios.get(encodeURI(`api/userlist?pageNo=${this.pageNo}&qty=${this.qty}&where=${where}`)).then(x=>{
           if(x.data&&x.data.status){
@@ -350,6 +355,7 @@ export default {
   },
   data() {
       return {
+        moretimer:'',
         //分页
         pageNo:1,
         qty:5,

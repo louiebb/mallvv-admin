@@ -15,11 +15,28 @@ module.exports = {
          res.end(result);
        });
     });
-     app.get("/userRole", function (req, res) {
+    app.get("/checkedAccount", function (req, res) {
+      var obj = {
+        where: JSON.parse(req.query.where),
+      };
+      user.selectByCondition(obj, function (result) {
+        res.end(result);
+      });
+    });
+    app.get("/login", function (req, res) {
+      var obj = {
+        where: JSON.parse(req.query.where),
+      };
+      user.login(obj, function (result) {
+        res.end(result);
+      });
+    });
+    app.get("/userRole", function (req, res) {
        user.userrole(function (result) {
          res.end(result);
        });
      });
+
     app.post("/userdeletebyid", function (req, res) {
         var obj = {
           where: req.body.where,

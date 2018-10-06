@@ -1,6 +1,6 @@
 var crypto = require('crypto');
 
-module.exports = function(message){
+module.exports = function(value){
 	var md5 = crypto.createHash('md5');
-	return md5.update(message, 'utf8').digest('hex'); 
+	return md5.update(value, 'utf8').digest('hex');
 }

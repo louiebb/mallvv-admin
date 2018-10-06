@@ -32,40 +32,61 @@ export default {
    data() {
       var validateAccount = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('账号验证失败'));
+          callback(new Error('请填写账号'));
           return false;
         }
-        callback();
+        clearTimeout(this.timer);
+        this.timer = setTimeout(()=>{
+           this.checkedAccount(value,function(x){
+             if(x.length<=0){
+              callback(new Error('账号不存在'));
+             }else{
+              callback();
+             }
+           });
+        },800);
+
 
       };
       var validatePass = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('密码验证失败'));
+          callback(new Error('请填写密码'));
           return false;
         }
         callback();
 
       };
       return {
+        timer:'',
         logining: false,
         ruleForm: {
           account: 'louiebb',
-          password: '123'
+          password: '123456'
         },
         rules: {
           account: [
-            { required: true, message: '请输入账号', trigger: 'blur' },
-            { validator: validateAccount }
+            { required: true, message: '账号不能为空', trigger: 'blur' },
+            { validator: validateAccount } //此方法为每次验证
           ],
           password: [
-            { required: true, message: '请输入密码', trigger: 'blur' },
-            { validator: validatePass }
+            { required: true, message: '密码不能为空', trigger: 'blur' },
+            // { validator: validatePass }
           ]
         },
         checked: true
       };
     },
     methods: {
+      checkedAccount(account,cb){
+        let where =  [
+            {f:'account',o:'=',v:`${account}`},
+        ];
+        where = JSON.stringify(where);
+
+        this.$axios.get(encodeURI(`api/checkedAccount?where=${where}`)).then(x=>{
+          cb(x.data.data) ;
+        }).catch(x=>console.log(x));
+      },
       handleReset(formName) {
         this.$refs[formName].resetFields();
         console.log(666);
@@ -76,20 +97,37 @@ export default {
         this.$refs.ruleForm.validate((valid) => {
           if (valid) {
             this.logining = true;
-            var loginParams = { username: this.ruleForm.account, password: this.ruleForm.password };
-            requestLogin(loginParams).then(data => {
+            let where =  [
+                {f:'account',o:'=',v:`${this.ruleForm.account}`},
+                {f:'password',o:'=',v:`${this.ruleForm.password}`},
+            ];
+            where = JSON.stringify(where);
+
+            this.$axios.get(encodeURI(`api/login?where=${where}`)).then(x=>{
               this.logining = false;
-              let { msg, code, user } = data;
-              if (code !== 200) {
-                this.$message({
-                  message: msg,
-                  type: 'error'
-                });
-              } else {
-                sessionStorage.setItem('user', JSON.stringify(user));
-                this.$router.push({ name:'index' });
+              let data = x.data.data;
+              if(data.length){
+                this.$store.commit('setaccountData',data[0]);
+                sessionStorage.user = JSON.stringify(data[0]);
+                 this.$router.push({ name:'index' });
               }
-            });
+              // console.log(1111,this.$store.state.user.accountData);
+
+            }).catch(x=>console.log(x));
+            // var loginParams = { account: this.ruleForm.account, password: this.ruleForm.password };
+            // requestLogin(loginParams).then(data => {
+            //   this.logining = false;
+            //   let { msg, code, user } = data;
+            //   if (code !== 200) {
+            //     this.$message({
+            //       message: msg,
+            //       type: 'error'
+            //     });
+            //   } else {
+            //     sessionStorage.setItem('user', JSON.stringify(user));
+            //     this.$router.push({ name:'index' });
+            //   }
+            // });
           } else {
             console.log('error submit!!');
             return false;

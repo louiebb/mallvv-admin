@@ -8,6 +8,7 @@ let typetable3 = 't_type_three';
 let typetable2 = 't_type_two';
 let business = {
   pageselect: function (data, callback) {
+    console.log(12324);
     let condition = 'and' + data.where.map(x => ` ${x.f} ${x.o} '${x.v}' `).join('and');
     let sql = `select * from ${shoptable} where 1=1 ${condition} limit ${(data.pageNo-1)*data.qty} , ${data.qty}`;
     let sql2 = `select count(*) as total  from ${shoptable} where 1=1 ${condition}`;

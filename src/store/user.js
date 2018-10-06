@@ -1,7 +1,8 @@
 export default {
   //用于存放数据
   state: {
-    userRole: {}
+    userRole: {},
+    accountData:{}
   },
   //获取数据
   //与组件中的computed类似
@@ -16,6 +17,9 @@ export default {
     setUserRole(state, payload) {
       state.userRole = payload;
     },
+    setaccountData(state,payload){
+      state.accountData = payload;
+    }
   },
   //事件:用于异步操作
   actions: {

@@ -1,4 +1,5 @@
 let db = require('../sql/mysqlDB.js');
+let md5 = require('../modules/md5.js');
 let async = require('async');
 let dateutils =  require('date-utils');
 
@@ -16,10 +17,55 @@ let userBusiness = {
         //register
         //return result
     },
-    login:function(){
-        //connect db
-        //login
-        //return result
+    logindo:function (id,cb) {
+      let date = new Date();
+      let token = md5(date.getTime().toString());
+      date.setUTCDate(date.getUTCDate()+7)
+      let exprietime = date.toFormat("YYYY-MM-DD HH24:MI:SS");
+      let sql =  `update ${usertable} set token = '${token}' , expire = '${exprietime}'  where id =  ${id}`
+      db.common(sql, function (res) {
+      res = JSON.parse(res);
+      if(res.status){
+        cb();
+      }
+      });
+        // console.log(111,token,exprietime)
+
+     },
+    userexist:function (condition,cb) {
+      let sql = `select * from ${usertable} where ${condition}`;
+      db.common(sql,  (res)=> {
+        res = JSON.parse(res);
+        if(res.status){
+          if(res.data.length){
+            this.logindo(res.data[0].id,cb);
+          }else{
+            cb();
+          }
+        }else{
+          cb();
+        }
+      })
+    },
+    login:function(data,callback){
+      let condition = data.where.map(x => ` ${x.f} ${x.o} '${x.v}' `).join('and');
+      this.userexist(condition,function(){
+        let sql = `select * from ${usertable} where ${condition}`;
+        //  console.log(sql);
+        db.common(sql, function (res) {
+          callback(res);
+        })
+      });
+
+
+    },
+    selectByCondition:function(data,callback){
+      let condition = 'and' + data.where.map(x => ` ${x.f} ${x.o} '${x.v}' `).join('and');
+       let sql = `select * from ${usertable} where 1=1 ${condition}`;
+      //  console.log(sql);
+       db.common(sql, function (res) {
+         callback(res);
+       })
     },
     pageselect:function(data,callback){
        let condition = 'and' + data.where.map(x => ` ${x.f} ${x.o} '${x.v}' `).join('and');

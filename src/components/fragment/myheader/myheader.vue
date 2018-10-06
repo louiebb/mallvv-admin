@@ -5,7 +5,7 @@
       <h1 class="name">{{name}}后台管理系统</h1>
     </div>
     <p class="dec">
-      欢迎xxxx登录我们的{{name}}系统，在这你可以猥琐欲为
+      欢迎{{user}}登录我们的{{name}}系统，在这你可以猥琐欲为
     </p>
     <div class="out">
        <el-button  type="danger"  size="mini" plain>退出</el-button>
@@ -20,6 +20,7 @@ export default {
     return {
       page: "header",
       name:this.$store.state.header.name,
+      user:JSON.parse(sessionStorage.user).account
     };
   },
   methods: {
