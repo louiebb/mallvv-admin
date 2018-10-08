@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50714
 File Encoding         : 65001
 
-Date: 2018-10-03 18:30:50
+Date: 2018-10-08 12:56:36
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -460,19 +460,17 @@ CREATE TABLE `t_user` (
   `nickname` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
+  `token` varchar(255) DEFAULT NULL,
+  `expire` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=46 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of t_user
 -- ----------------------------
-INSERT INTO `t_user` VALUES ('1', '244429290@qq.com', '123', '1970-01-20 00:00:00', '2018-10-02 18:04:15', '2000', '1', '校助', '18898601312', 'null');
-INSERT INTO `t_user` VALUES ('25', 'louiebb', '1', '1970-01-01 00:00:01', '2018-10-02 16:31:13', '1000', '1', '校长', '18898601316', null);
-INSERT INTO `t_user` VALUES ('30', '18898601334', '0184', '1970-01-01 00:00:01', '2018-10-02 16:31:14', '3000', '1', '主任', '18898601334', null);
-INSERT INTO `t_user` VALUES ('31', '18898601335', '0592', '1970-01-01 00:00:01', '2018-10-02 16:31:15', '4000', '1', '老师', '18898601309', null);
-INSERT INTO `t_user` VALUES ('39', '用户1', '', '2018-10-02 18:08:37', '2018-10-02 18:08:50', '', '1', '123', '123', '123');
-INSERT INTO `t_user` VALUES ('41', '1234', '', '2018-10-02 18:09:38', '2018-10-02 18:09:46', '', '0', '12', '2134', '1243');
-INSERT INTO `t_user` VALUES ('42', '11', '', '2018-10-02 18:09:47', '2018-10-02 18:09:53', '', '0', '11', '11', '11');
-INSERT INTO `t_user` VALUES ('40', '1234', '', '2018-10-02 18:09:25', '2018-10-02 18:09:34', '', '1', '1235', '1234', '1234');
-INSERT INTO `t_user` VALUES ('45', '11', '', '2018-10-02 18:10:08', '2018-10-02 18:10:13', '', '0', '11', '11', '11');
+INSERT INTO `t_user` VALUES ('1', '244429290@qq.com', '123', '1970-01-20 00:00:00', '2018-10-02 18:04:15', '2000', '1', '校助', '18898601312', 'null', null, null);
+INSERT INTO `t_user` VALUES ('25', 'louiebb', '123456', '1970-01-01 00:00:01', '2018-10-06 13:29:35', '1000', '1', '校长', '18898601316', null, '7ab952783a4cbe6332d8bd02a5950508', '2018-10-13 13:29:35');
+INSERT INTO `t_user` VALUES ('30', '18898601334', '0184', '1970-01-01 00:00:01', '2018-10-02 16:31:14', '3000', '1', '主任', '18898601334', null, null, null);
+INSERT INTO `t_user` VALUES ('31', '18898601335', '0592', '1970-01-01 00:00:01', '2018-10-02 16:31:15', '4000', '1', '老师', '18898601309', null, null, null);
+INSERT INTO `t_user` VALUES ('39', '用户1', '', '2018-10-02 18:08:37', '2018-10-05 13:58:48', '4000', '1', '123', '123', '123', null, null);
 SET FOREIGN_KEY_CHECKS=1;
